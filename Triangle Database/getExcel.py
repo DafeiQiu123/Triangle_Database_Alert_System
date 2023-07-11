@@ -6,8 +6,24 @@ import pymysql
 
 class getExcel:
 
-    @staticmethod
-    def serialize(data_frame):
+    def __init__(self, data_frame):
+        self.data_frame = data_frame
+        self.map = self.serialize(data_frame)
+        self.DBA = self.getDBA(self.data_frame, self.map)
+        self.CorpType = self.getCorp(self.data_frame, self.map)
+        self.ConName = self.getContactName(self.data_frame, self.map)
+        self.ConNum = self.getContactNumber(self.data_frame, self.map)
+        self.phone = self.getPhone(self.data_frame, self.map)
+        self.fax = self.getFax(self.data_frame, self.map)
+        self.email = self.getEmail(self.data_frame, self.map)
+        self.state = self.getState(self.data_frame, self.map)
+        self.county = self.getCounty(self.data_frame, self.map)
+        self.address = self.getAddress(self.data_frame, self.map)
+        self.fee = self.getFee(self.data_frame,self.map)
+
+
+
+    def serialize(self, data_frame):
         attribute = dict()
 
         att = data_frame.columns
@@ -17,8 +33,8 @@ class getExcel:
             count = count + 1
         return attribute
 
-    @staticmethod
-    def getDBA(data_frame, attribute):
+
+    def getDBA(self, data_frame, attribute):
         row_num = attribute['DBA']
         DBAlist = []
 
@@ -28,8 +44,17 @@ class getExcel:
 
         return DBAlist
 
-    @staticmethod
-    def getContactName(data_frame, attribute):
+    def getCorp(self, data_frame, attribute):
+        row_num = attribute['CorpType']
+        Corp = []
+
+        for index, row in data_frame.iterrows():
+            item = row[row_num]
+            Corp.append(item)
+
+        return Corp
+
+    def getContactName(self, data_frame, attribute):
         row_num = attribute['contact name']
         cn = []
 
@@ -39,8 +64,7 @@ class getExcel:
 
         return cn
 
-    @staticmethod
-    def getPhone(data_frame, attribute):
+    def getPhone(self, data_frame, attribute):
         row_num = attribute['phone']
         phone = []
 
@@ -50,8 +74,7 @@ class getExcel:
 
         return phone
 
-    @staticmethod
-    def getContactNumber(data_frame, attribute):
+    def getContactNumber(self, data_frame, attribute):
         row_num = attribute['contact number']
         cn = []
 
@@ -61,8 +84,8 @@ class getExcel:
 
         return cn
 
-    @staticmethod
-    def get1040(data_frame, attribute):
+
+    def get1040(self, data_frame, attribute):
         row_num = attribute['1040 type']
         tenfortytype = []
 
@@ -72,8 +95,7 @@ class getExcel:
 
         return tenfortytype
 
-    @staticmethod
-    def getFax(data_frame, attribute):
+    def getFax(self, data_frame, attribute):
         row_num = attribute['fax']
         fax = []
 
@@ -83,8 +105,8 @@ class getExcel:
 
         return fax
 
-    @staticmethod
-    def getEmail(data_frame, attribute):
+
+    def getEmail(self, data_frame, attribute):
         row_num = attribute['email']
         email = []
 
@@ -94,8 +116,7 @@ class getExcel:
 
         return email
 
-    @staticmethod
-    def getState(data_frame, attribute):
+    def getState(self, data_frame, attribute):
         row_num = attribute['state']
         state = []
 
@@ -105,9 +126,9 @@ class getExcel:
 
         return state
 
-    @staticmethod
-    def getCounty(data_frame, attribute):
-        row_num = attribute['1040 county']
+
+    def getCounty(self, data_frame, attribute):
+        row_num = attribute['county']
         county = []
 
         for index, row in data_frame.iterrows():
@@ -116,8 +137,8 @@ class getExcel:
 
         return county
 
-    @staticmethod
-    def getAddress(data_frame, attribute):
+
+    def getAddress(self, data_frame, attribute):
         row_num = attribute['address']
         address = []
 
@@ -127,8 +148,7 @@ class getExcel:
 
         return address
 
-    @staticmethod
-    def getFee(data_frame, attribute):
+    def getFee(self, data_frame, attribute):
         row_num = attribute['fee']
         fee = []
 
@@ -139,4 +159,7 @@ class getExcel:
         return fee
 
 
-
+if __name__ == '__main__':
+    data_frame = pd.read_excel('test.xlsx')
+    a = getExcel(data_frame)
+    print(a.DBA)
