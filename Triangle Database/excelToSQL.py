@@ -12,8 +12,11 @@ import openpyxl
 
 class excelToSQL:
 
-    @staticmethod
-    def create2D(data):
+    def __init__(self, data):
+        self.table = self.create2D(data)
+
+
+    def create2D(self, data):
         a = getExcel
         a = a.getExcel(data)
         row = len(a.state)
@@ -26,7 +29,6 @@ class excelToSQL:
             li = []
             for j in range(0, col):
                 result = a.out(Key_list[j])
-
                 if result is not None:
                     li.append(result[i])
                 else:
@@ -56,10 +58,8 @@ class excelToSQL:
 
 if __name__ == '__main__':
     data_frame = pd.read_excel('test.xlsx')
-
-    B = excelToSQL()
-
-    array_2d = B.create2D(data_frame)
+    B = excelToSQL(data_frame)
+    array_2d = B.table
 
     for index in array_2d:
         print(' '.join(map(str, index)))
