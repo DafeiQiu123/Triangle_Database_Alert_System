@@ -14,6 +14,29 @@ class excelToSQL:
 
     def __init__(self, data):
         self.table = self.create2D(data)
+        self.keylist = self.getList(data)
+        self.Attribute = """
+        CREATE TABLE INFO(
+            DBA VARCHAR(100),
+            CorpType VARCHAR(10),
+            1040 type VARCHAR(20),
+            submission date DATE,
+            contact number INT,
+            fax INT,
+            email VARCHAR(50),
+            state VARCHAR(50),
+            county VARCHAR(50),
+            address VARCHAR(50),
+            fee INT);"""
+        self.Insert = """
+        """
+
+
+    def getList(self, data):
+        a = getExcel
+        a = a.getExcel(data)
+        keyList = list(a.map)
+        return keyList
 
 
     def create2D(self, data):
@@ -37,23 +60,16 @@ class excelToSQL:
 
         return array_2d
 
-    def createAttribute(self):
-        createAttribute = """
-        CREATE TABLE INFO(
-            DBA VARCHAR(100),
-            CorpType VARCHAR(10),
-            1040 type VARCHAR(20),
-            submission date DATE,
-            contact number INT,
-            fax INT,
-            email VARCHAR(50),
-            state VARCHAR(50),
-            county VARCHAR(50),
-            address VARCHAR(50),
-            fee INT);"""
 
-        insertAllRows = """
-        """
+    def insertARow(self):
+        conn = pymysql.connect(host='localhost',
+                               user='root',
+                               password='',
+                               db='triangle_accounting',
+                               charset='utf8mb4',
+                               cursorclass=pymysql.cursors.DictCursor)
+        cursor = conn.cursor()
+
 
 
 if __name__ == '__main__':
