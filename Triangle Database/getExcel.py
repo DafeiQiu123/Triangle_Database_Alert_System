@@ -1,8 +1,11 @@
+import math
+
 import pandas as pd
 import sqlite3
 import pymysql
 
-#DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
+
+# DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
 
 class getExcel:
 
@@ -19,9 +22,9 @@ class getExcel:
         self.state = self.getState(self.data_frame, self.map)
         self.county = self.getCounty(self.data_frame, self.map)
         self.address = self.getAddress(self.data_frame, self.map)
-        self.fee = self.getFee(self.data_frame,self.map)
-
-
+        self.fee = self.getFee(self.data_frame, self.map)
+        self.tenFortyType = self.get1040(self.data_frame, self.map)
+        self.subDate = self.getSubDate(self.data_frame, self.map)
 
     def serialize(self, data_frame):
         attribute = dict()
@@ -33,13 +36,14 @@ class getExcel:
             count = count + 1
         return attribute
 
-
     def getDBA(self, data_frame, attribute):
         row_num = attribute['DBA']
         DBAlist = []
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             DBAlist.append(item)
 
         return DBAlist
@@ -50,6 +54,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             Corp.append(item)
 
         return Corp
@@ -60,6 +66,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             cn.append(item)
 
         return cn
@@ -70,6 +78,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             phone.append(item)
 
         return phone
@@ -80,10 +90,11 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             cn.append(item)
 
         return cn
-
 
     def get1040(self, data_frame, attribute):
         row_num = attribute['1040 type']
@@ -91,6 +102,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             tenfortytype.append(item)
 
         return tenfortytype
@@ -101,10 +114,11 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if math.isnan(item):
+                item = 0
             fax.append(item)
 
         return fax
-
 
     def getEmail(self, data_frame, attribute):
         row_num = attribute['email']
@@ -112,6 +126,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             email.append(item)
 
         return email
@@ -122,10 +138,11 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             state.append(item)
 
         return state
-
 
     def getCounty(self, data_frame, attribute):
         row_num = attribute['county']
@@ -133,10 +150,11 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             county.append(item)
 
         return county
-
 
     def getAddress(self, data_frame, attribute):
         row_num = attribute['address']
@@ -144,6 +162,8 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if item is None:
+                item = '0'
             address.append(item)
 
         return address
@@ -154,9 +174,51 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
+            if math.isnan(item):
+                item = 0
             fee.append(item)
 
         return fee
+
+    def getSubDate(self, data_frame, attribute):
+        row_num = attribute['submission date']
+        subDate = []
+
+        for index, row in data_frame.iterrows():
+            item = row[row_num]
+            if item is None:
+                item = '0'
+            subDate.append(item)
+
+        return subDate
+
+    def out(self, str):
+        if str == 'DBA':
+            return self.DBA
+        elif str == 'CorpType':
+            return self.CorpType
+        elif str == '1040 type':
+            return self.tenFortyType
+        elif str == 'submission date':
+            return self.subDate
+        elif str == 'contact name':
+            return self.ConName
+        elif str == 'contact number':
+            return self.ConNum
+        elif str == 'phone':
+            return self.phone
+        elif str == 'fax':
+            return self.fax
+        elif str == 'email':
+            return self.email
+        elif str == 'state':
+            return self.state
+        elif str == 'county':
+            return self.county
+        elif str == 'address':
+            return self.address
+        elif str == 'fee':
+            return self.fee
 
 
 if __name__ == '__main__':

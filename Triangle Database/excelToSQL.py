@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import sqlite3
 import pymysql
@@ -9,6 +11,29 @@ import openpyxl
 
 
 class excelToSQL:
+
+    @staticmethod
+    def create2D(data):
+        a = getExcel
+        a = a.getExcel(data)
+        row = len(a.state)
+        col = len(a.map)
+
+        array_2d = []
+        Key_list = list(a.map)
+
+        for i in range(0, row):
+            li = []
+            for j in range(0, col):
+                result = a.out(Key_list[j])
+
+                if result is not None:
+                    li.append(result[i])
+                else:
+                    li.append(None)
+            array_2d.append(li)
+
+        return array_2d
 
     def createAttribute(self):
         createAttribute = """
@@ -31,22 +56,11 @@ class excelToSQL:
 
 if __name__ == '__main__':
     data_frame = pd.read_excel('test.xlsx')
-    a = getExcel
-    a = a.getExcel(data_frame)
-    row = len(a.state)
-    col = len(a.map)
 
-    array_2d = []
-    for _ in range(row):
-        row = [0] * col
-        array_2d.append(row)
+    B = excelToSQL()
 
-    for i in range(len(array_2d)):
-        for j in range(len(array_2d[i])):
-            element = array_2d[i][j]
+    array_2d = B.create2D(data_frame)
 
+    for index in array_2d:
+        print(' '.join(map(str, index)))
 
-    Key_list = list(a.map)
-
-    print(Key_list)
-    print(a.map)
