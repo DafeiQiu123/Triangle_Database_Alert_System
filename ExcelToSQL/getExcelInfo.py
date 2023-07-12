@@ -13,8 +13,8 @@ class getExcelInfo:
         self.fee = self.getAnnualServiceFee(data_frame)
         self.bi = self.getBusinessIndustry(data_frame)
         self.bt = self.getBusinessType(data_frame)
-        self.bs = self.getBusinessIndustry(data_frame)
-        self.ci = self.getBusinessType(data_frame)
+        self.bs = self.getBusinessSize(data_frame)
+        self.ci = self.getContactInfo(data_frame)
         self.st = self.getServiceStatus(data_frame)
         self.gg = self.getGoogleDrive(data_frame)
 

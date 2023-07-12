@@ -1,14 +1,14 @@
 import pandas as pd
 import pymysql
-import getExcelSchedule
+import getExcelInfo
 
 
-class excelToSQL:
+class excelToSQLforInfo:
 
-    def __init__(self, data, name):
-        a = getExcelSchedule
+    def __init__(self, fileName, name):
+        a = getExcelInfo
         self.tableName = name
-        self.data_frame = a.getExcelSchedule(data)
+        self.data_frame = a.getExcelInfo(fileName)
         self.table = self.create2D()
         self.keylist = self.getList()
 
@@ -28,18 +28,15 @@ class excelToSQL:
         cursor = conn.cursor()
         Attribute = """
             CREATE TABLE """ + name + """(
-                DBA VARCHAR(100),
-                State VARCHAR(10),
-                Pay_Roll VARCHAR(20),
-                941D VARCHAR(2),
-                SALES VARCHAR(50),
-                County_Tax VARCHAR(20),
-                941F VARCHAR(2),
-                STATE_WITHHOLDING VARCHAR(20),
-                STATE_UI VARCHAR(2),
-                940Form VARCHAR(2),
-                BOOKKEEPING VARCHAR(50),
-                Accountant VARCHAR(50));"""
+                Client_Business_Name VARCHAR(100),
+                Client_Name VARCHAR(20),
+                Annual_Service_Fee FLOAT,
+                Business_Industry VARCHAR(50),
+                Business_Type ENUM('S', 'C'),
+                Business_Size INT,
+                Contact_Info VARCHAR(20),
+                Service_Status ENUM('active', 'closed', 'pending'),
+                Google_Drive_Folder_Link VARCHAR(200));"""
 
         cursor.execute(Attribute)
         conn.commit()
@@ -65,7 +62,7 @@ class excelToSQL:
         conn.close()
 
     def create2D(self):
-        row = len(self.data_frame.state)
+        row = len(self.data_frame.clientbn)
         col = len(self.data_frame.map)
 
         array_2d = []
@@ -88,7 +85,7 @@ class excelToSQL:
         #        for index in self.keylist:
         #            att = att + index + ',' + ' '
         #        att = att[:-2]
-        att = "DBA, State, Pay_Roll, 941D, SALES, County_Tax, 941F, STATE_withholding, STATE_UI, 940Form, BOOKKEEPING, Accountant"
+        att = "Client_Business_Name, Client_Name, Annual_Service_Fee, Business_Industry, Business_Type, Business_Size, Contact_Info, Service_Status, Google_Drive_Folder_Link"
 
         conn = pymysql.connect(host='localhost',
                                user='root',
@@ -99,30 +96,27 @@ class excelToSQL:
         cursor = conn.cursor()
 
         # Define the values for the new row
-        row = len(self.data_frame.state)
+        row = len(self.data_frame.clientbn)
 
         for index in range(0, row):
-            DBA = self.data_frame.DBA[index]
-            State = self.data_frame.state[index]
-            pr = self.data_frame.payroll[index]
-            NFOD = self.data_frame.NFOD[index]
-            sales = self.data_frame.SALES[index]
-            countyTx = self.data_frame.countyTax[index]
-            NFOF = self.data_frame.NFOF[index]
-            sw = self.data_frame.sw[index]
-            su = self.data_frame.su[index]
-            NFO = self.data_frame.NFO[index]
-            book = self.data_frame.bk[index]
-            acc = self.data_frame.acc[index]
+            CBN = self.data_frame.clientbn[index]
+            CN = self.data_frame.clientName[index]
+            fee = self.data_frame.fee[index]
+            bi = self.data_frame.bi[index]
+            bt = self.data_frame.bt[index]
+            bs = self.data_frame.bs[index]
+            ci = self.data_frame.ci[index]
+            st = self.data_frame.st[index]
+            gg = self.data_frame.gg[index]
 
             # swap the actual name for info, the same as above with create table
-            query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(
+            query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(
                 self.tableName,
                 att)
 
             # Execute the SQL query with the values
             cursor.execute(query, (
-                DBA, State, pr, NFOD, sales, countyTx, NFOF, sw, su, NFO, book, acc))
+                CBN, CN, fee, bi, bt, bs, ci, st, gg))
 
         conn.commit()
 
@@ -131,9 +125,8 @@ class excelToSQL:
 
 
 if __name__ == '__main__':
-    data_frame = pd.read_excel('test2.xlsx')
-    b = excelToSQL(data_frame, "info")
-    #b.deleteTable()
-    #b.createTable()
-    #b.insertARow()
+    b = excelToSQLforInfo('test2.xlsx', "info")
+    b.deleteTable()
+    b.createTable()
+    b.insertARow()
 

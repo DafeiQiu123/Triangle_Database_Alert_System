@@ -10,7 +10,6 @@ class getExcelSchedule:
     def __init__(self, fileName):
         data_frame = pd.read_excel(fileName, sheet_name= 1)
         self.data_frame = data_frame
-        self.data_frame = data_frame
         self.map = self.serialize(data_frame)
         self.DBA = self.getDBA(self.data_frame)
         self.state = self.getState(self.data_frame)
