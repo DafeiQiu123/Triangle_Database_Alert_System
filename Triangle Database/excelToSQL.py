@@ -1,20 +1,16 @@
-import math
-
 import pandas as pd
-import sqlite3
 import pymysql
 import getExcel
-import openpyxl
 
 
 # DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
-
-
 class excelToSQL:
 
     def __init__(self, data):
-        self.table = self.create2D(data)
-        self.keylist = self.getList(data)
+        a = getExcel
+        self.data_frame = a.getExcel(data)
+        self.table = self.create2D()
+        self.keylist = self.getList()
         self.Attribute = """
         CREATE TABLE INFO(
             DBA VARCHAR(100),
@@ -28,30 +24,22 @@ class excelToSQL:
             county VARCHAR(50),
             address VARCHAR(50),
             fee INT);"""
-        self.Insert = """
-        """
 
-
-    def getList(self, data):
-        a = getExcel
-        a = a.getExcel(data)
-        keyList = list(a.map)
+    def getList(self):
+        keyList = list(self.data_frame.map)
         return keyList
 
-
-    def create2D(self, data):
-        a = getExcel
-        a = a.getExcel(data)
-        row = len(a.state)
-        col = len(a.map)
+    def create2D(self):
+        row = len(self.data_frame.state)
+        col = len(self.data_frame.map)
 
         array_2d = []
-        Key_list = list(a.map)
+        Key_list = list(self.data_frame.map)
 
         for i in range(0, row):
             li = []
             for j in range(0, col):
-                result = a.out(Key_list[j])
+                result = self.data_frame.out(Key_list[j])
                 if result is not None:
                     li.append(result[i])
                 else:
@@ -60,8 +48,12 @@ class excelToSQL:
 
         return array_2d
 
-
     def insertARow(self):
+        att = ''
+        for index in self.keylist:
+            att = att + index + ',' + ' '
+        att = att[:-2]
+
         conn = pymysql.connect(host='localhost',
                                user='root',
                                password='',
@@ -70,6 +62,32 @@ class excelToSQL:
                                cursorclass=pymysql.cursors.DictCursor)
         cursor = conn.cursor()
 
+        # Define the values for the new row
+        row = len(self.data_frame.state)
+
+        for index in range(0, row):
+            DBA = self.data_frame.DBA[index]
+            CorpType = self.data_frame.CorpType[index]
+            tenFortyType = self.data_frame.tenFortyType[index]
+            subDate = self.data_frame.subDate[index]
+            conName = self.data_frame.ConName[index]
+            conNum = self.data_frame.ConNum[index]
+            phone = self.data_frame.phone[index]
+            fax = self.data_frame.fax[index]
+            email = self.data_frame.email[index]
+            state = self.data_frame.state[index]
+            county = self.data_frame.county[index]
+            address = self.data_frame.address[index]
+            fee = self.data_frame.fee[index]
+
+            # swap the actual name for info, the same as above with create table
+            cursor.execute("INSERT INTO INFO (" + att + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                DBA, CorpType, tenFortyType, subDate, conName, conNum, phone, fax, email, state, county, address, fee))
+
+            conn.commit()
+
+            cursor.close()
+            conn.close()
 
 
 if __name__ == '__main__':
@@ -80,3 +98,8 @@ if __name__ == '__main__':
     for index in array_2d:
         print(' '.join(map(str, index)))
 
+    att = ''
+    for index in B.keylist:
+        att = att + index + ',' + ' '
+    att = att[:-2]
+    print(att)
