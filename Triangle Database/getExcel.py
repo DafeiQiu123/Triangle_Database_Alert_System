@@ -1,8 +1,6 @@
 import math
-
 import pandas as pd
-import sqlite3
-import pymysql
+from pandas import Timestamp
 
 
 # DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
@@ -42,8 +40,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             DBAlist.append(item)
 
         return DBAlist
@@ -54,8 +51,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             Corp.append(item)
 
         return Corp
@@ -66,8 +62,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             cn.append(item)
 
         return cn
@@ -78,8 +73,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             phone.append(item)
 
         return phone
@@ -90,8 +84,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             cn.append(item)
 
         return cn
@@ -102,8 +95,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             tenfortytype.append(item)
 
         return tenfortytype
@@ -114,8 +106,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if math.isnan(item):
-                item = 0
+            item = self.toZero(item)
             fax.append(item)
 
         return fax
@@ -126,8 +117,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             email.append(item)
 
         return email
@@ -138,8 +128,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             state.append(item)
 
         return state
@@ -150,8 +139,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             county.append(item)
 
         return county
@@ -162,8 +150,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             address.append(item)
 
         return address
@@ -174,8 +161,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if math.isnan(item):
-                item = 0
+            item = self.toZero(item)
             fee.append(item)
 
         return fee
@@ -186,8 +172,7 @@ class getExcel:
 
         for index, row in data_frame.iterrows():
             item = row[row_num]
-            if item is None:
-                item = '0'
+            item = self.toZero(item)
             subDate.append(item)
 
         return subDate
@@ -220,6 +205,18 @@ class getExcel:
         elif str == 'fee':
             return self.fee
 
+    def toZero(self, item):
+        if isinstance(item, Timestamp):
+            if item is None:
+                return 'empty'
+        if isinstance(item, str):
+            if item == "":
+                return 'empty'
+        if isinstance(item, float):
+            if math.isnan(item):
+                return 'empty'
+
+        return item
 
 if __name__ == '__main__':
     data_frame = pd.read_excel('test.xlsx')
