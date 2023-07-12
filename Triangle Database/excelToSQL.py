@@ -1,15 +1,15 @@
 import pandas as pd
 import pymysql
-import getExcel
+import getExcelSchedule
 
 
 # DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
 class excelToSQL:
 
     def __init__(self, data, name):
-        a = getExcel
+        a = getExcelSchedule
         self.tableName = name
-        self.data_frame = a.getExcel(data)
+        self.data_frame = a.getExcelSchedule(data)
         self.table = self.create2D()
         self.keylist = self.getList()
 
@@ -30,18 +30,17 @@ class excelToSQL:
         Attribute = """
             CREATE TABLE """ + name + """(
                 DBA VARCHAR(100),
-                CorpType VARCHAR(10),
-                1040_type VARCHAR(20),
-                submission_date DATE,
-                contact_name VARCHAR(50),
-                contact_number VARCHAR(50),
-                phone VARCHAR(50),
-                fax VARCHAR(20),
-                email VARCHAR(50),
-                state VARCHAR(50),
-                county VARCHAR(50),
-                address VARCHAR(50),
-                fee INT);"""
+                State VARCHAR(10),
+                Pay_Roll VARCHAR(20),
+                941D VARCHAR(2),
+                SALES VARCHAR(50),
+                County_Tax VARCHAR(20),
+                941F VARCHAR(2),
+                STATE_WITHHOLDING VARCHAR(20),
+                STATE_UI VARCHAR(2),
+                940Form VARCHAR(2),
+                BOOKKEEPING VARCHAR(50),
+                Accountant VARCHAR(50));"""
 
         cursor.execute(Attribute)
         conn.commit()
@@ -90,7 +89,7 @@ class excelToSQL:
         #        for index in self.keylist:
         #            att = att + index + ',' + ' '
         #        att = att[:-2]
-        att = "DBA, CorpType, 1040_type, submission_date, contact_name, contact_number, phone, fax, email, state, county, address, fee"
+        att = "DBA, State, Pay_Roll, 941D, SALES, County_Tax, 941F, STATE_withholding, STATE_UI, 940Form, BOOKKEEPING, Accountant"
 
         conn = pymysql.connect(host='localhost',
                                user='root',
@@ -105,27 +104,26 @@ class excelToSQL:
 
         for index in range(0, row):
             DBA = self.data_frame.DBA[index]
-            CorpType = self.data_frame.CorpType[index]
-            tenFortyType = self.data_frame.tenFortyType[index]
-            subDate = self.data_frame.subDate[index]
-            conName = self.data_frame.ConName[index]
-            conNum = self.data_frame.ConNum[index]
-            phone = self.data_frame.phone[index]
-            fax = self.data_frame.fax[index]
-            email = self.data_frame.email[index]
-            state = self.data_frame.state[index]
-            county = self.data_frame.county[index]
-            address = self.data_frame.address[index]
-            fee = self.data_frame.fee[index]
+            State = self.data_frame.state[index]
+            pr = self.data_frame.payroll[index]
+            NFOD = self.data_frame.NFOD[index]
+            sales = self.data_frame.SALES[index]
+            countyTx = self.data_frame.countyTax[index]
+            NFOF = self.data_frame.NFOF[index]
+            sw = self.data_frame.sw[index]
+            su = self.data_frame.su[index]
+            NFO = self.data_frame.NFO[index]
+            book = self.data_frame.bk[index]
+            acc = self.data_frame.acc[index]
 
             # swap the actual name for info, the same as above with create table
-            query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(
+            query = "INSERT INTO {} ({}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(
                 self.tableName,
                 att)
 
             # Execute the SQL query with the values
             cursor.execute(query, (
-                DBA, CorpType, tenFortyType, subDate, conName, conNum, phone, fax, email, state, county, address, fee))
+                DBA, State, pr, NFOD, sales, countyTx, NFOF, sw, su, NFO, book, acc))
 
         conn.commit()
 
@@ -134,9 +132,9 @@ class excelToSQL:
 
 
 if __name__ == '__main__':
-    data_frame = pd.read_excel('test.xlsx')
+    data_frame = pd.read_excel('test2.xlsx')
     b = excelToSQL(data_frame, "info")
     #b.deleteTable()
-    b.createTable()
-    b.insertARow()
+    #b.createTable()
+    #b.insertARow()
 
