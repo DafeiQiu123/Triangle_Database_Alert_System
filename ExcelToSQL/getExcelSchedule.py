@@ -7,21 +7,23 @@ from pandas import Timestamp
 
 class getExcelSchedule:
 
-    def __init__(self, data_frame):
+    def __init__(self, fileName):
+        data_frame = pd.read_excel(fileName, sheet_name= 1)
+        self.data_frame = data_frame
         self.data_frame = data_frame
         self.map = self.serialize(data_frame)
-        self.DBA = self.getDBA(self.data_frame, self.map)
-        self.state = self.getState(self.data_frame, self.map)
-        self.payroll = self.getPayroll(self.data_frame, self.map)
-        self.NFOD = self.get941D(self.data_frame, self.map)
-        self.SALES = self.getSales(self.data_frame, self.map)
-        self.countyTax = self.getCountyTax(self.data_frame, self.map)
-        self.NFOF = self.get941F(self.data_frame, self.map)
-        self.sw = self.getStateWithHolding(self.data_frame, self.map)
-        self.su = self.getStateUI(self.data_frame, self.map)
-        self.NFO = self.get940(self.data_frame, self.map)
-        self.bk = self.getBookkeeping(self.data_frame, self.map)
-        self.acc = self.getAccountant(self.data_frame, self.map)
+        self.DBA = self.getDBA(self.data_frame)
+        self.state = self.getState(self.data_frame)
+        self.payroll = self.getPayroll(self.data_frame)
+        self.NFOD = self.get941D(self.data_frame)
+        self.SALES = self.getSales(self.data_frame)
+        self.countyTax = self.getCountyTax(self.data_frame)
+        self.NFOF = self.get941F(self.data_frame)
+        self.sw = self.getStateWithHolding(self.data_frame)
+        self.su = self.getStateUI(self.data_frame)
+        self.NFO = self.get940(self.data_frame)
+        self.bk = self.getBookkeeping(self.data_frame)
+        self.acc = self.getAccountant(self.data_frame)
 
     def serialize(self, data_frame):
         attribute = dict()
@@ -33,8 +35,7 @@ class getExcelSchedule:
             count = count + 1
         return attribute
 
-    def getDBA(self, data_frame, attribute):
-        row_num = attribute['DBA']
+    def getDBA(self, data_frame):
         DBAlist = []
 
         for index, row in data_frame.iterrows():
@@ -44,8 +45,7 @@ class getExcelSchedule:
 
         return DBAlist
 
-    def getState(self, data_frame, attribute):
-        row_num = attribute['State']
+    def getState(self, data_frame):
         state = []
 
         for index, row in data_frame.iterrows():
@@ -55,8 +55,7 @@ class getExcelSchedule:
 
         return state
 
-    def getPayroll(self, data_frame, attribute):
-        row_num = attribute['Pay Roll']
+    def getPayroll(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -66,8 +65,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def get941D(self, data_frame, attribute):
-        row_num = attribute['941D']
+    def get941D(self, data_frame):
         state = []
 
         for index, row in data_frame.iterrows():
@@ -77,8 +75,7 @@ class getExcelSchedule:
 
         return state
 
-    def getSales(self, data_frame, attribute):
-        row_num = attribute['SALES']
+    def getSales(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -88,8 +85,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def getCountyTax(self, data_frame, attribute):
-        row_num = attribute['County Tax']
+    def getCountyTax(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -99,8 +95,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def get941F(self, data_frame, attribute):
-        row_num = attribute['941F']
+    def get941F(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -110,8 +105,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def getStateWithHolding(self, data_frame, attribute):
-        row_num = attribute['STATE withholding']
+    def getStateWithHolding(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -121,8 +115,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def getStateUI(self, data_frame, attribute):
-        row_num = attribute['STATE UI']
+    def getStateUI(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -132,7 +125,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def get940(self, data_frame, attribute):
+    def get940(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -142,8 +135,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def getBookkeeping(self, data_frame, attribute):
-        row_num = attribute['BOOKKEEPING']
+    def getBookkeeping(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -153,8 +145,7 @@ class getExcelSchedule:
 
         return itemList
 
-    def getAccountant(self, data_frame, attribute):
-        row_num = attribute['Accountant']
+    def getAccountant(self, data_frame):
         itemList = []
 
         for index, row in data_frame.iterrows():
@@ -202,6 +193,5 @@ class getExcelSchedule:
         return item
 
 if __name__ == '__main__':
-    data_frame = pd.read_excel('test2.xlsx')
-    a = getExcelSchedule(data_frame)
+    a = getExcelSchedule('test2.xlsx')
     print(list(a.map))

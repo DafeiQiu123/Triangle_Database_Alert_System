@@ -3,7 +3,6 @@ import pymysql
 import getExcelSchedule
 
 
-# DBA	CorpType	1040 type	submission date	contact name	contact number	phone	fax	email	state	county	address	fee
 class excelToSQL:
 
     def __init__(self, data, name):
